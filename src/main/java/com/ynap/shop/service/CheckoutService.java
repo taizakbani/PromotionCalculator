@@ -1,11 +1,11 @@
 package com.ynap.shop.service;
 
-import static com.ynap.shop.dao.PromotionsDAO.activePromotionsMap;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Objects.nonNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import com.ynap.shop.model.Promotion;
 
 public class CheckoutService {
 
-    Map<String,Promotion> promotionRules=activePromotionsMap();
+    Map<String,Promotion> promotionRules=new HashMap<>();
 
     private List<Item> itemsInBasket=new ArrayList<>();
     private List<Item> allItemsList= new ArrayList<>();
