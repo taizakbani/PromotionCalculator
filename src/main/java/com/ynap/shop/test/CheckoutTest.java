@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,12 @@ public class CheckoutTest {
 	
 	@Mock
 	Item highValueNonDiscountedItem;
+	
+	@Mock
+	Item toteBagMock;
+	
+	@Mock
+	Item beltMock;
 	
 	@Mock
 	Item highValueDiscountedItem;
@@ -72,6 +79,14 @@ public class CheckoutTest {
 		when(highValueNonDiscountedItem.getName()).thenReturn("nonDiscountedItem");
 		when(highValueNonDiscountedItem.getPrice()).thenReturn(valueOf(9500));
 		
+		when(toteBagMock.getId()).thenReturn("1011-005");
+		when(toteBagMock.getName()).thenReturn("Tote Bag");
+		when(toteBagMock.getPrice()).thenReturn(valueOf(8950));
+		
+		when(beltMock.getId()).thenReturn("2010-001");
+		when(beltMock.getName()).thenReturn("Belt");
+		when(beltMock.getPrice()).thenReturn(valueOf(990));
+		
 		
 		when(highValueDiscountedItem.getId()).thenReturn("1");
 		when(highValueDiscountedItem.getName()).thenReturn("discountedItem");
@@ -96,8 +111,37 @@ public class CheckoutTest {
 		when(discountedItem3.getPrice()).thenReturn(valueOf(95));
 		when(discountedItem3.isEligibleForDiscount()).thenReturn(true);
 		when(discountedItem3.getDiscountedPrice()).thenReturn(valueOf(90));
-		
 	}
+	
+	
+	   @Test
+	    public void testOrderTotalWhenToteBagBeltAndKeyChainInCart(){
+	        testObj.addToBasket(toteBagMock);
+	        testObj.addToBasket(beltMock);
+	        testObj.addToBasket(discountedItem2);
+	        BigDecimal total = testObj.getTotal();
+	        assertTrue(total.compareTo(valueOf(9031.5))==0);
+	    }
+	    
+	    @Test
+	    public void testOrderTotalWhenBeltAndTwoKitchensInCart(){
+	        testObj.addToBasket(beltMock);
+	        testObj.addToBasket(discountedItem2);
+	        testObj.addToBasket(discountedItem2);
+	        BigDecimal total = testObj.getTotal();
+	        assertTrue(total.compareTo(valueOf(1170))==0);
+	    }
+	    
+	    
+	    @Test
+	    public void testOrderTotalWhenToteBagBeltAndTwoKeyChainsInCart(){
+	        testObj.addToBasket(toteBagMock);
+	        testObj.addToBasket(beltMock);
+	        testObj.addToBasket(discountedItem2);
+	        testObj.addToBasket(discountedItem2);
+	        BigDecimal total = testObj.getTotal();
+	        assertTrue(total.compareTo(valueOf(9108))==0);
+	    }
 	
 	
 	@Test
@@ -155,12 +199,13 @@ public class CheckoutTest {
 	
 	@Test
 	public void testOrderTotalWhenOneDiscountedAndTwoNonDiscountedItemsInCartAndOrderTotalBelowMinThreshold(){
-		testObj.addToBasket(nonDiscountedItem);
-		testObj.addToBasket(nonDiscountedItem2);
-		testObj.addToBasket(discountedItem2);
-		BigDecimal total = testObj.getTotal();
-		assertTrue(total.compareTo(valueOf(141))==0);
+	    testObj.addToBasket(nonDiscountedItem);
+	    testObj.addToBasket(nonDiscountedItem2);
+	    testObj.addToBasket(discountedItem2);
+	    BigDecimal total = testObj.getTotal();
+	    assertTrue(total.compareTo(valueOf(141))==0);
 	}
+	
 	
 	@Test
 	public void testOrderTotalWhenTwoDifferentDiscountedAndTwoNonDiscountedItemsInCartAndOrderTotalBelowMinThreshold(){
